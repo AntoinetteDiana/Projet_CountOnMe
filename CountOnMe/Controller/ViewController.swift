@@ -8,48 +8,26 @@
 
 import UIKit
 
+
+
 class ViewController: UIViewController {
+    
+// MARK: - @IB Outlet
+    
+//    lien avec le storyboard Controller -> View
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
     
-    var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
-    }
-    
-    // Error check computed variables
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
-    }
-    
-    var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    var expressionHaveResult: Bool {
-        return textView.text.firstIndex(of: "=") != nil
-    }
-    
-    // View Life cycles
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-    
+// MARK: - @IB Action
     
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
-        
         if expressionHaveResult {
             textView.text = ""
         }
-        
         textView.text.append(numberText)
     }
     
@@ -72,7 +50,7 @@ class ViewController: UIViewController {
             self.present(alertVC, animated: true, completion: nil)
         }
     }
-
+    
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         guard expressionIsCorrect else {
             let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
@@ -86,28 +64,53 @@ class ViewController: UIViewController {
             return self.present(alertVC, animated: true, completion: nil)
         }
         
-        // Create local copy of operations
-        var operationsToReduce = elements
-        
-        // Iterate over operations while an operand still here
-        while operationsToReduce.count > 1 {
-            let left = Int(operationsToReduce[0])!
-            let operand = operationsToReduce[1]
-            let right = Int(operationsToReduce[2])!
-            
-            let result: Int
-            switch operand {
-            case "+": result = left + right
-            case "-": result = left - right
-            default: fatalError("Unknown operator !")
-            }
-            
-            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-            operationsToReduce.insert("\(result)", at: 0)
-        }
-        
-        textView.text.append(" = \(operationsToReduce.first!)")
+        operation.getResults(operationsToReduce: elements)
+    }
+    
+// MARK: - Properties
+    
+    var operation = Operation()
+    
+//   transforme la phrase en tableau des éléments entre espaces. le .map parcours le tableau et renvoie chaque éléments en string (exemple "1 + 1" devient ["1","+","1"])
+    var elements: [String] {
+        return textView.text.split(separator: " ").map { "\($0)" }
+    }
+    
+//    vérifie si la phrase ne se termine pas par un opérateur
+    // Error check computed variables
+    var expressionIsCorrect: Bool {
+        return elements.last != "+" && elements.last != "-"
+    }
+    
+//    vérifie que la phrase à au moins trois éléments
+    var expressionHaveEnoughElement: Bool {
+        return elements.count >= 3
+    }
+    
+    var canAddOperator: Bool {
+        return elements.last != "+" && elements.last != "-"
+    }
+    
+//    cherche le "=" dans le texte et renvoie sa position. s'il ne trouve pas le "=" renvoie nil.
+    var expressionHaveResult: Bool {
+        return textView.text.firstIndex(of: "=") != nil
+    }
+    
+// MARK: - View Life Cycles
+    
+    // View Life cycles
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        operation.operationDelegate = self
     }
 
 }
 
+// MARK: - Extension Protocole
+extension ViewController : OperationCalculDelegate {
+    func didResult(operation: [String]) {
+        textView.text.append(" = \(operation.first!)")
+    }
+    
+}
