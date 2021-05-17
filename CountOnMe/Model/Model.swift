@@ -13,16 +13,32 @@ protocol OperationCalculDelegate {
 }
 
 class GiveResult {
-
+    
     var giveResultDelegate: OperationCalculDelegate?
     var operationsToReduceProperties = [String]()
     
     func getResults(operationsToReduce: [String]) {
         var operationsToReduce = operationsToReduce
+        var operandIndex = 0
+        var left = 0
+        var operand = ""
+        var right = 0
+        
         while operationsToReduce.count > 1 {
-            let left = Int(operationsToReduce[0])!
-            let operand = operationsToReduce[1]
-            let right = Int(operationsToReduce[2])!
+            if operationsToReduce.firstIndex(of: "x") != nil || operationsToReduce.firstIndex(of: "/") != nil {
+                if operationsToReduce.firstIndex(of: "x") != nil {
+                    operandIndex = operationsToReduce.firstIndex(of: "x")!
+                } else if operationsToReduce.firstIndex(of: "/") != nil {
+                    operandIndex = operationsToReduce.firstIndex(of: "/")!
+                }
+                left = Int(operationsToReduce[operandIndex - 1])!
+                operand = operationsToReduce[operandIndex]
+                right = Int(operationsToReduce[operandIndex + 1])!
+            } else {
+                left = Int(operationsToReduce[0])!
+                operand = operationsToReduce[1]
+                right = Int(operationsToReduce[2])!
+            }
             
             let result: Int
             switch operand {
@@ -40,7 +56,7 @@ class GiveResult {
         giveResultDelegate?.didResult(operation: operationsToReduce)
     }
     
-
+    
     
 }
 

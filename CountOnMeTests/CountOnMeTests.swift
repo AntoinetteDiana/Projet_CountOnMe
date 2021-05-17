@@ -29,10 +29,37 @@ class CountOnMeTests: XCTestCase {
     
         XCTAssert(operations.operationsToReduceProperties == ["0"])
     }
+    
+    func testGivenNumber2x1_WhenaskingForResult_ThenResultIs2() {
+        let operations = GiveResult()
+        let calcul = ["2", "x", "1"]
+        
+        operations.getResults(operationsToReduce: calcul)
+    
+        XCTAssert(operations.operationsToReduceProperties == ["2"])
+    }
 
-//    func testGivenNumber1X1_WhenaskingForResult_ThenResultIsFatalError() {
+    func testGivenNumber4Div2_WhenaskingForResult_ThenResultIs2() {
+        let operations = GiveResult()
+        let calcul = ["4", "/", "2"]
+        
+        operations.getResults(operationsToReduce: calcul)
+    
+        XCTAssert(operations.operationsToReduceProperties == ["2"])
+    }
+    
+    func testGivenNumber2Plus1x2_WhenaskingForResult_ThenResultIs4() {
+        let operations = GiveResult()
+        let calcul = ["2", "+", "1", "x", "2"]
+        
+        operations.getResults(operationsToReduce: calcul)
+    
+        XCTAssert(operations.operationsToReduceProperties == ["4"])
+    }
+    
+//    func testGivenNumber1&1_WhenaskingForResult_ThenResultIsFatalError() {
 //        let operations = GiveResult()
-//        let calcul = ["1", "X", "1"]
+//        let calcul = ["1", "&", "1"]
 //
 //        operations.getResults(operationsToReduce: calcul)
 //    XCTExpectFailure()

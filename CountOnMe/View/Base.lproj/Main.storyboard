@@ -180,7 +180,6 @@
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="tappedMultiplicationButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="tqC-xa-Gsr"/>
                                                     <action selector="tappedOperatorButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="met-rG-Wyz"/>
                                                 </connections>
                                             </button>
@@ -192,7 +191,6 @@
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="tappedDivisionButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="TYy-aS-eDk"/>
                                                     <action selector="tappedOperatorButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="8RM-b5-NUf"/>
                                                 </connections>
                                             </button>
@@ -221,7 +219,6 @@
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="tappedAdditionButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="V0J-eg-vQK"/>
                                                     <action selector="tappedOperatorButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="oZE-4t-e4y"/>
                                                 </connections>
                                             </button>
@@ -234,7 +231,6 @@
                                                 </state>
                                                 <connections>
                                                     <action selector="tappedOperatorButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="UK7-XW-80C"/>
-                                                    <action selector="tappedSubstractionButton:" destination="eqK-jh-KKu" eventType="touchUpInside" id="KVX-AF-NVM"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qMj-Of-bCU">

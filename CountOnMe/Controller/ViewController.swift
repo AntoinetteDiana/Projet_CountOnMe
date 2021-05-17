@@ -34,61 +34,6 @@ class ViewController: UIViewController {
         addOperator(operatorButton: sender.title(for: .normal)!)
     }
     
-    @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        addOperator(operatorButton: "+")
-    }
-    
-    @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        if expressionHaveResult {
-            textView.text = ""
-        }
-        if textView.text == "" {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Ne commencez par par un opérateur !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
-        } else if canAddOperator {
-            textView.text.append(" - ")
-        } else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
-        }
-    }
-   
-    @IBAction func tappedDivisionButton(_ sender: UIButton) {
-        if expressionHaveResult {
-            textView.text = ""
-        }
-        if textView.text == "" {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Ne commencez par par un opérateur !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
-        } else if canAddOperator {
-            textView.text.append(" / ")
-        } else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
-        }
-    }
-    
-    @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
-        if expressionHaveResult {
-            textView.text = ""
-        }
-        if textView.text == "" {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Ne commencez par par un opérateur !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
-        } else if canAddOperator {
-            textView.text.append(" x ")
-        } else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
-        }
-    }
-    
     @IBAction func tappedACButton(_ sender: UIButton) {
         textView.text = ""
     }
@@ -169,6 +114,7 @@ class ViewController: UIViewController {
 }
 
 // MARK: - Extension Protocole
+
 extension ViewController : OperationCalculDelegate {
     func didResult(operation: [String]) {
         textView.text.append(" = \(operation.first!)")
