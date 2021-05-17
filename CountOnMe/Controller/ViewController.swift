@@ -69,7 +69,7 @@ class ViewController: UIViewController {
     
 // MARK: - Properties
     
-    var operation = Operation()
+    var operation = GiveResult()
     
 //   transforme la phrase en tableau des éléments entre espaces. le .map parcours le tableau et renvoie chaque éléments en string (exemple "1 + 1" devient ["1","+","1"])
     var elements: [String] {
@@ -102,7 +102,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        operation.operationDelegate = self
+        operation.giveResultDelegate = self
     }
 
 }

@@ -7,27 +7,36 @@
 //
 
 import XCTest
+@testable import CountOnMe
 
 class CountOnMeTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    func testGivenNumber1Plus1_WhenaskingForResult_ThenResultIs2() {
+        let operations = GiveResult()
+        let calcul = ["1", "+", "1"]
+        
+        operations.getResults(operationsToReduce: calcul)
+    
+        XCTAssert(operations.operationsToReduceProperties == ["2"])
+    }
+    
+    func testGivenNumber1minus1_WhenaskingForResult_ThenResultIs0() {
+        let operations = GiveResult()
+        let calcul = ["1", "-", "1"]
+        
+        operations.getResults(operationsToReduce: calcul)
+    
+        XCTAssert(operations.operationsToReduceProperties == ["0"])
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
+//    func testGivenNumber1X1_WhenaskingForResult_ThenResultIsFatalError() {
+//        let operations = GiveResult()
+//        let calcul = ["1", "X", "1"]
+//
+//        operations.getResults(operationsToReduce: calcul)
+//    XCTExpectFailure()
+//    XCTAssertThrowsError("Unknown operator !")
+//    }
+    
 }

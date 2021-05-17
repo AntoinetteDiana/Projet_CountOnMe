@@ -12,9 +12,10 @@ protocol OperationCalculDelegate {
     func didResult(operation: [String])
 }
 
-class Operation {
+class GiveResult {
 
-    var operationDelegate: OperationCalculDelegate?
+    var giveResultDelegate: OperationCalculDelegate?
+    var operationsToReduceProperties = [String]()
     
     func getResults(operationsToReduce: [String]) {
         var operationsToReduce = operationsToReduce
@@ -27,13 +28,16 @@ class Operation {
             switch operand {
             case "+": result = left + right
             case "-": result = left - right
+            case "x": result = left * right
+            case "/": result = left / right
             default: fatalError("Unknown operator !")
             }
             
             operationsToReduce = Array(operationsToReduce.dropFirst(3))
             operationsToReduce.insert("\(result)", at: 0)
-            operationDelegate?.didResult(operation: operationsToReduce)
+            self.operationsToReduceProperties = operationsToReduce
         }
+        giveResultDelegate?.didResult(operation: operationsToReduce)
     }
     
 
