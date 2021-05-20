@@ -66,9 +66,7 @@ class Calculator {
         if expressionHaveResult {
             text = ""
         }
-        if text == "" {
-            giveResultDelegate?.alert(message: "Ne commencez par par un opérateur !")
-        } else if canAddOperator {
+        if canAddOperator {
             text.append(" \(operatorButton) ")
         } else {
             giveResultDelegate?.alert(message: "Un operateur est déja mis !")
@@ -82,46 +80,71 @@ class Calculator {
         } else if !expressionHaveEnoughElement {
             giveResultDelegate?.alert(message: "Démarrez un nouveau calcul !")
         } else {
+            
             var operationsToReduce = elements
+            switch operationsToReduce.first {
+            case "+", "-", "x", "/":
+                operationsToReduce.insert("0", at: 0)
+            default:
+                break
+            }
+            
             while operationsToReduce.count > 1 {
-                var operandIndex = 1
-                var leftIndex = 0
-                var rightIndex = 2
+
+                let containMult = operationsToReduce.contains("x")
+                let containDiv = operationsToReduce.contains("/")
+                let indexMult = operationsToReduce.firstIndex(of: "x")
+                let indexDiv = operationsToReduce.firstIndex(of: "/")
                 
-                if operationsToReduce.contains("x") && !operationsToReduce.contains("/") {
-                    operandIndex = operationsToReduce.firstIndex(of: "x")!
-                } else if !operationsToReduce.contains("x") && operationsToReduce.contains("/") {
-                    operandIndex = operationsToReduce.firstIndex(of: "/")!
-                    leftIndex = operandIndex - 1
-                    rightIndex = operandIndex + 1
-                    
-                } else if operationsToReduce.contains("x") && operationsToReduce.contains("/") {
-                    if operationsToReduce.firstIndex(of: "x")! < operationsToReduce.firstIndex(of: "/")! {
-                        operandIndex = operationsToReduce.firstIndex(of: "x")!
+                var operandIndex: Int {
+                    if containMult && !containDiv {
+                        return indexMult!
+                    }  else if !containMult && containDiv {
+                        return indexDiv!
+                    } else if containMult && containDiv {
+                        if indexMult! < indexDiv! {
+                            return indexMult!
+                        } else {
+                            return indexDiv!
+                        }
                     } else {
-                        operandIndex = operationsToReduce.firstIndex(of: "/")!
+                        return 1
                     }
-                    leftIndex = operandIndex - 1
-                    rightIndex = operandIndex + 1
                 }
                 
-                let left = Double(operationsToReduce[leftIndex])!
+                let left = Double(operationsToReduce[operandIndex - 1])!
                 let operand = operationsToReduce[operandIndex]
-                let right = Double(operationsToReduce[rightIndex])!
+                let right = Double(operationsToReduce[operandIndex + 1])!
                 
                 let result: Double
                 switch operand {
                 case "+": result = left + right
                 case "-": result = left - right
                 case "x": result = left * right
-                case "/": result = left / right
+                case "/":
+                    if right != 0 {
+                        result = left / right
+                    } else {
+                        giveResultDelegate?.alert(message: "Division par 0 impossible")
+                        return
+                    }
                 default: return
                 }
                 
-                operationsToReduce.remove(at:rightIndex)
+                
+                let resultIntString = "\(Int(result)).00"
+                let resultString = String(format: "%.2f", result)
+                
+                var resultFinal = resultString
+                
+                if resultIntString == resultString {
+                    resultFinal = "\(Int(result))"
+                }
+                
+                operationsToReduce.remove(at:operandIndex + 1)
                 operationsToReduce.remove(at:operandIndex)
-                operationsToReduce.remove(at:leftIndex)
-                operationsToReduce.insert("\(result)",at:leftIndex)
+                operationsToReduce.remove(at:operandIndex - 1)
+                operationsToReduce.insert("\(resultFinal)",at:operandIndex - 1)
             }
             text.append(" = \(operationsToReduce.first!)")
         }
