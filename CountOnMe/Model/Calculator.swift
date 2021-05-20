@@ -13,7 +13,7 @@ protocol OperationCalculDelegate {
     func alert(message: String)
 }
 
-class GiveResult {
+class Calculator {
     
     // MARK: - Properties
     
@@ -83,28 +83,33 @@ class GiveResult {
             giveResultDelegate?.alert(message: "Démarrez un nouveau calcul !")
         } else {
             var operationsToReduce = elements
-            var operandIndex = 0
-            var left = 0
-            var operand = ""
-            var right = 0
-            
             while operationsToReduce.count > 1 {
-                if operationsToReduce.firstIndex(of: "x") != nil || operationsToReduce.firstIndex(of: "/") != nil {
-                    if operationsToReduce.firstIndex(of: "x") != nil {
+                var operandIndex = 1
+                var leftIndex = 0
+                var rightIndex = 2
+                
+                if operationsToReduce.contains("x") && !operationsToReduce.contains("/") {
+                    operandIndex = operationsToReduce.firstIndex(of: "x")!
+                } else if !operationsToReduce.contains("x") && operationsToReduce.contains("/") {
+                    operandIndex = operationsToReduce.firstIndex(of: "/")!
+                    leftIndex = operandIndex - 1
+                    rightIndex = operandIndex + 1
+                    
+                } else if operationsToReduce.contains("x") && operationsToReduce.contains("/") {
+                    if operationsToReduce.firstIndex(of: "x")! < operationsToReduce.firstIndex(of: "/")! {
                         operandIndex = operationsToReduce.firstIndex(of: "x")!
-                    } else if operationsToReduce.firstIndex(of: "/") != nil {
+                    } else {
                         operandIndex = operationsToReduce.firstIndex(of: "/")!
                     }
-                    left = Int(operationsToReduce[operandIndex - 1])!
-                    operand = operationsToReduce[operandIndex]
-                    right = Int(operationsToReduce[operandIndex + 1])!
-                } else {
-                    left = Int(operationsToReduce[0])!
-                    operand = operationsToReduce[1]
-                    right = Int(operationsToReduce[2])!
+                    leftIndex = operandIndex - 1
+                    rightIndex = operandIndex + 1
                 }
                 
-                let result: Int
+                let left = Double(operationsToReduce[leftIndex])!
+                let operand = operationsToReduce[operandIndex]
+                let right = Double(operationsToReduce[rightIndex])!
+                
+                let result: Double
                 switch operand {
                 case "+": result = left + right
                 case "-": result = left - right
@@ -113,12 +118,12 @@ class GiveResult {
                 default: return
                 }
                 
-                operationsToReduce = Array(operationsToReduce.dropFirst(3))
-                operationsToReduce.insert("\(result)", at: 0)
+                operationsToReduce.remove(at:rightIndex)
+                operationsToReduce.remove(at:operandIndex)
+                operationsToReduce.remove(at:leftIndex)
+                operationsToReduce.insert("\(result)",at:leftIndex)
             }
             text.append(" = \(operationsToReduce.first!)")
         }
     }
-
-
 }

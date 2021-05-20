@@ -42,7 +42,7 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     
-    var calculOperation = GiveResult()
+    var calculOperation = Calculator()
     
     // MARK: - View Life Cycles
     
