@@ -24,28 +24,24 @@ class Calculator {
         }
     }
     
-    //   transforme la phrase en tableau des éléments entre espaces. le .map parcours le tableau et renvoie chaque éléments en string (exemple "1 + 1" devient ["1","+","1"])
-    var elements: [String] {
+    private var elements: [String] {
         return text.split(separator: " ").map { "\($0)" }
     }
     
-    //    vérifie si la phrase ne se termine pas par un opérateur
     // Error check computed variables
-    var expressionIsCorrect: Bool {
+    private var expressionIsCorrect: Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "x"
     }
     
-    //    vérifie que la phrase à au moins trois éléments
-    var expressionHaveEnoughElement: Bool {
+    private var expressionHaveEnoughElement: Bool {
         return elements.count >= 3
     }
     
-    var canAddOperator: Bool {
+    private var canAddOperator: Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "x"
     }
     
-    //    cherche le "=" dans le texte et renvoie sa position. s'il ne trouve pas le "=" renvoie nil.
-    var expressionHaveResult: Bool {
+    private var expressionHaveResult: Bool {
         return text.firstIndex(of: "=") != nil
     }
     
@@ -64,8 +60,10 @@ class Calculator {
     
     func tappedOperatorButton(operatorButton: String) {
         if expressionHaveResult {
-            text = ""
+            guard let lastElement = elements.last else { return }
+            text = lastElement
         }
+
         if canAddOperator {
             text.append(" \(operatorButton) ")
         } else {
@@ -73,80 +71,93 @@ class Calculator {
         }
     }
     
-    
     func tappedEqualButton() {
-        if !expressionIsCorrect {
+        guard expressionIsCorrect else {
             giveResultDelegate?.alert(message: "Entrez une expression correcte !")
-        } else if !expressionHaveEnoughElement {
-            giveResultDelegate?.alert(message: "Démarrez un nouveau calcul !")
-        } else {
-            
-            var operationsToReduce = elements
-            switch operationsToReduce.first {
-            case "+", "-", "x", "/":
-                operationsToReduce.insert("0", at: 0)
-            default:
-                break
-            }
-            
-            while operationsToReduce.count > 1 {
-
-                let containMult = operationsToReduce.contains("x")
-                let containDiv = operationsToReduce.contains("/")
-                let indexMult = operationsToReduce.firstIndex(of: "x")
-                let indexDiv = operationsToReduce.firstIndex(of: "/")
-                
-                var operandIndex: Int {
-                    if containMult && !containDiv {
-                        return indexMult!
-                    }  else if !containMult && containDiv {
-                        return indexDiv!
-                    } else if containMult && containDiv {
-                        if indexMult! < indexDiv! {
-                            return indexMult!
-                        } else {
-                            return indexDiv!
-                        }
-                    } else {
-                        return 1
-                    }
-                }
-                
-                let left = Double(operationsToReduce[operandIndex - 1])!
-                let operand = operationsToReduce[operandIndex]
-                let right = Double(operationsToReduce[operandIndex + 1])!
-                
-                let result: Double
-                switch operand {
-                case "+": result = left + right
-                case "-": result = left - right
-                case "x": result = left * right
-                case "/":
-                    if right != 0 {
-                        result = left / right
-                    } else {
-                        giveResultDelegate?.alert(message: "Division par 0 impossible")
-                        return
-                    }
-                default: return
-                }
-                
-                
-                let resultIntString = "\(Int(result)).00"
-                let resultString = String(format: "%.2f", result)
-                
-                var resultFinal = resultString
-                
-                if resultIntString == resultString {
-                    resultFinal = "\(Int(result))"
-                }
-                
-                operationsToReduce.remove(at:operandIndex + 1)
-                operationsToReduce.remove(at:operandIndex)
-                operationsToReduce.remove(at:operandIndex - 1)
-                operationsToReduce.insert("\(resultFinal)",at:operandIndex - 1)
-            }
-            text.append(" = \(operationsToReduce.first!)")
+            return
         }
+        guard expressionHaveEnoughElement else {
+            giveResultDelegate?.alert(message: "Démarrez un nouveau calcul !")
+            return
+        }
+        var operationsToReduce = elements
+        switch operationsToReduce.first {
+        case "+", "-", "/", "x" : operationsToReduce.insert("0", at: 0)
+        default: break
+        }
+
+        while operationsToReduce.count > 1 {
+            let operandIndex = findOperatorIndex(operations: operationsToReduce)
+            guard let left = Double(operationsToReduce[operandIndex - 1]) else { return }
+            let operand = operationsToReduce[operandIndex]
+            guard let right = Double(operationsToReduce[operandIndex + 1]) else { return }
+            
+            guard notDivPer0(operand: operand, right: right) else {
+                giveResultDelegate?.alert(message: "Division par 0 impossible")
+                return
+            }
+            
+            let result: Double
+            switch operand {
+            case "+": result = left + right
+            case "-": result = left - right
+            case "x": result = left * right
+            case "/": result = left / right
+            default: return
+            }
+            
+            guard let formatedValue = changeFormatNumber().string(from: NSNumber(value: result)) else { return }
+            operationsToReduce = reduceOperation(array: operationsToReduce, index: operandIndex, added: formatedValue)
+        }
+        guard let resultText = operationsToReduce.first else { return }
+        text.append(" = \(resultText)")
     }
+    
+    // MARK: - Private methodes
+    
+    private func notDivPer0(operand: String, right: Double) -> Bool {
+        guard operand == "/" && right == 0 else { return true }
+        return false
+    }
+    
+    private func findOperatorIndex(operations: [String]) -> Int {
+        let containMult = operations.contains("x")
+        let containDiv = operations.contains("/")
+        let indexMult = operations.firstIndex(of: "x")
+        let indexDiv = operations.firstIndex(of: "/")
+        
+        var operandIndex: Int {
+            if containMult && !containDiv {
+                return indexMult!
+            }  else if !containMult && containDiv {
+                return indexDiv!
+            } else if containMult && containDiv {
+                if indexMult! < indexDiv! {
+                    return indexMult!
+                } else {
+                    return indexDiv!
+                }
+            }
+            return 1
+        }
+        return operandIndex
+    }
+    
+    private func changeFormatNumber() -> NumberFormatter {
+        let Formatter = NumberFormatter()
+        Formatter.numberStyle = .decimal
+        Formatter.maximumFractionDigits = 2
+        Formatter.minimumIntegerDigits = 0
+        return Formatter
+    }
+    
+    private func reduceOperation(array: [String], index: Int, added: String) -> [String] {
+        var myArray = array
+        myArray.remove(at:index + 1)
+        myArray.remove(at:index)
+        myArray.remove(at:index - 1)
+        myArray.insert("\(added)",at:index - 1)
+        return myArray
+    }
+    
 }

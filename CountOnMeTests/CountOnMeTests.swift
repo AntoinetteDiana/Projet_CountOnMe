@@ -151,7 +151,7 @@ class CountOnMeTests: XCTestCase {
         calculator.tappedOperatorButton(operatorButton: "+")
 
         
-        XCTAssertEqual(calculator.text, " + ")
+        XCTAssertEqual(calculator.text, "2 + ")
     }
     
     func testGivenNumber1Plus_WhenAddingOperatorButton_ThenTextIs1PLus() {

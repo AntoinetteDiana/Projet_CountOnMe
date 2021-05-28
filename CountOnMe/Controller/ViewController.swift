@@ -14,13 +14,11 @@ class ViewController: UIViewController {
     
     // MARK: - @IB Outlet
     
-    //    lien avec le storyboard Controller -> View
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
     
     // MARK: - @IB Action
     
-    // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         calculOperation.tappedNumberButton(number: sender.title(for: .normal)!)
     }
@@ -36,9 +34,6 @@ class ViewController: UIViewController {
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         calculOperation.tappedEqualButton()
     }
-    
-    // MARK: - Methodes
-    
     
     // MARK: - Properties
     
