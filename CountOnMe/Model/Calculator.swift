@@ -47,10 +47,12 @@ class Calculator {
     
     // MARK: - Methodes
     
+    /// when tapping on AC  button
     func tappedACButton() {
         text = ""
     }
     
+    /// when tapping on one of number  button
     func tappedNumberButton(number: String) {
         if expressionHaveResult {
             text = ""
@@ -58,6 +60,7 @@ class Calculator {
         text.append(number)
     }
     
+    /// when tapping on one of the operator button
     func tappedOperatorButton(operatorButton: String) {
         if expressionHaveResult {
             guard let lastElement = elements.last else { return }
@@ -71,6 +74,7 @@ class Calculator {
         }
     }
     
+    /// when tapping on equal  button
     func tappedEqualButton() {
         guard expressionIsCorrect else {
             giveResultDelegate?.alert(message: "Entrez une expression correcte !")
@@ -115,11 +119,13 @@ class Calculator {
     
     // MARK: - Private methodes
     
+    /// check if the operation contain an div per 0
     private func notDivPer0(operand: String, right: Double) -> Bool {
         guard operand == "/" && right == 0 else { return true }
         return false
     }
     
+    /// return the index of the first operator to be taken into account
     private func findOperatorIndex(operations: [String]) -> Int {
         let containMult = operations.contains("x")
         let containDiv = operations.contains("/")
@@ -132,17 +138,14 @@ class Calculator {
             }  else if !containMult && containDiv {
                 return indexDiv!
             } else if containMult && containDiv {
-                if indexMult! < indexDiv! {
-                    return indexMult!
-                } else {
-                    return indexDiv!
-                }
+                return indexMult! < indexDiv! ? indexMult! : indexDiv!
             }
             return 1
         }
         return operandIndex
     }
     
+    /// format number with 2 decimal or 0 if the result is an integer
     private func changeFormatNumber() -> NumberFormatter {
         let Formatter = NumberFormatter()
         Formatter.numberStyle = .decimal
@@ -151,6 +154,7 @@ class Calculator {
         return Formatter
     }
     
+    /// reduce the calcul after each operation
     private func reduceOperation(array: [String], index: Int, added: String) -> [String] {
         var myArray = array
         myArray.remove(at:index + 1)
