@@ -151,6 +151,7 @@ class Calculator {
         Formatter.numberStyle = .decimal
         Formatter.maximumFractionDigits = 2
         Formatter.minimumIntegerDigits = 0
+        Formatter.groupingSeparator = ""
         return Formatter
     }
     
